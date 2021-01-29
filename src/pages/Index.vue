@@ -9,7 +9,12 @@
         />
         <q-btn v-if="documents.length" label="Clear" @click="clearList" />
         <q-btn v-if="documents.length" label="Modify" @click="modifyList" />
-        <q-btn v-if="documents.length" label="Submit" @click="submitList" />
+        <q-btn
+          v-if="documents.length"
+          label="Submit"
+          @click="submitList"
+          :loading="loading"
+        />
       </div>
       <q-list style="margin-top: 80px; padding-bottom: 40px">
         <q-item v-for="(doc, i) in documents" :key="i">
@@ -39,13 +44,11 @@ export default {
   name: "PageIndex",
   data: () => ({
     documents: [],
+    loading: false,
   }),
   async mounted() {
     console.clear();
     console.log(db);
-    // let test = await this.getCollection("users");
-    // console.log(test);
-    console.log(jabber);
   },
   methods: {
     promptList() {
@@ -66,17 +69,18 @@ export default {
     },
     createListItem() {
       return {
-        email: jabber
-          .createEmail()
-          .split("")
-          .map((v) =>
-            /[a-zA-Z]/.test(v)
-              ? Math.round(Math.random())
-                ? v.toUpperCase()
-                : v.toLowerCase()
-              : v
-          )
-          .join(""),
+        email:
+          jabber
+            .createEmail()
+            .split("")
+            .map((v) =>
+              /[a-zA-Z]/.test(v)
+                ? Math.round(Math.random())
+                  ? v.toUpperCase()
+                  : v.toLowerCase()
+                : v
+            )
+            .join("") + " ",
         licenseKey: cerobee.generate(16),
         price: "45.00",
         productName: this.generateProduct(),
@@ -113,8 +117,28 @@ export default {
         doc.email = doc.email.toLowerCase().trim();
       });
     },
-    submitList() {
-      console.log("SUBMIT");
+    async submitList() {
+      this.loading = true;
+      await this.addAllDocs(cerobee.generate(3), this.documents);
+      this.loading = false;
+    },
+    async addAllDocs(collection, docs) {
+      return Promise.all(
+        docs.map((entry) => {
+          return this.addDoc(collection, entry);
+        })
+      );
+    },
+    async addDoc(collection, data) {
+      return await db
+        .collection(collection)
+        .add(data)
+        .then((ref) => {
+          return Promise.resolve(ref);
+        })
+        .catch((err) => {
+          return Promise.reject(err);
+        });
     },
   },
 };
