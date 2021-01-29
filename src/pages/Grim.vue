@@ -45,6 +45,7 @@ export default {
     collection: "7405",
     doc: "0D29f1PZLV37qCkVsSzV",
     loading: false,
+    target: null,
   }),
   mounted() {
     console.clear();
@@ -64,8 +65,13 @@ export default {
     },
     async onSubmit() {
       this.loading = true;
-      let result = await this.readTarget();
+      this.target = await this.readTarget();
+      console.log(this.target.email);
+      let result = await this.mergeData();
       console.log(result);
+
+      this.target = await this.readTarget();
+      console.log(this.target.email);
       this.loading = false;
     },
     async getDocById(collection, id, getData = true) {
@@ -79,7 +85,15 @@ export default {
         });
     },
     async readTarget() {
-      return this.getDocById(this.collection, this.doc);
+      return await this.getDocById(this.collection, this.doc);
+    },
+    async mergeData() {
+      return await db.collection(this.collection).doc(this.doc).set(
+        {
+          email: this.target.email.toLowerCase().trim(),
+        },
+        { merge: true }
+      );
     },
     onReset() {},
   },
