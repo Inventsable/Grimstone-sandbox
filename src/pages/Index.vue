@@ -49,6 +49,12 @@ export default {
   async mounted() {
     console.clear();
     console.log(db);
+    this.$q.notify.setDefaults({
+      position: "top",
+      timeout: 2500,
+      textColor: "white",
+      actions: [{ icon: "close", color: "white" }],
+    });
   },
   methods: {
     promptList() {
@@ -112,15 +118,18 @@ export default {
       this.documents = [];
     },
     modifyList() {
-      console.log("MODIFY");
       this.documents.forEach((doc) => {
         doc.email = doc.email.toLowerCase().trim();
       });
     },
     async submitList() {
       this.loading = true;
-      await this.addAllDocs(cerobee.generate(3), this.documents);
+      await this.addAllDocs(
+        cerobee.generate(4).substring(1, 5),
+        this.documents
+      );
       this.loading = false;
+      this.showNotif();
     },
     async addAllDocs(collection, docs) {
       return Promise.all(
@@ -139,6 +148,12 @@ export default {
         .catch((err) => {
           return Promise.reject(err);
         });
+    },
+    showNotif() {
+      this.$q.notify({
+        message: `Database updated with ${this.documents.length} entries`,
+        color: "primary",
+      });
     },
   },
 };
