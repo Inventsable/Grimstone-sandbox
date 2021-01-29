@@ -51,18 +51,6 @@ export default {
     console.clear();
   },
   methods: {
-    testUpdate() {
-      db.collection("users")
-        .doc("random-id")
-        .set(
-          {
-            friends: {
-              "friend-uid-3": true,
-            },
-          },
-          { merge: true }
-        );
-    },
     async onSubmit() {
       this.loading = true;
       this.target = await this.readTarget();
