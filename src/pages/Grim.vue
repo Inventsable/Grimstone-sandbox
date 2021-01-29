@@ -31,6 +31,14 @@
             flat
             class="q-ml-sm"
           />
+          <q-btn
+            :loading="modifyAll"
+            label="Modify all"
+            flat
+            class="q-ml-sm"
+            color="primary"
+            @click="modifyCollection"
+          />
         </div>
       </q-form>
     </div>
@@ -39,6 +47,9 @@
 
 <script>
 import db from "../init";
+import Grimstone from "../Grimstone";
+import config from "../../config";
+const grim = new Grimstone(config);
 
 export default {
   data: () => ({
@@ -46,11 +57,29 @@ export default {
     doc: "0D29f1PZLV37qCkVsSzV",
     loading: false,
     target: null,
+    modifyAll: false,
   }),
   mounted() {
     console.clear();
+    console.log(grim);
+    console.log(grim.test());
   },
   methods: {
+    async modifyCollection() {
+      console.log("MODIFY ALL");
+      let result = await grim.modifyCollection(
+        this.collection,
+        this.modifyEmail
+      );
+
+      console.log(result);
+    },
+    modifyEmail(data) {
+      console.log("INCOMING:", data.email);
+      return {
+        email: data.email.toLowerCase().trim(),
+      };
+    },
     async onSubmit() {
       this.loading = true;
       this.target = await this.readTarget();
