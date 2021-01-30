@@ -34,7 +34,8 @@
 </template>
 
 <script>
-import db from "../init";
+// import db from "../init";
+const db = {};
 import Jabber from "jabber";
 const jabber = new Jabber();
 const Cerobee = require("clerobee");
@@ -58,7 +59,8 @@ export default {
   },
   methods: {
     promptList() {
-      this.createList(this.randomNum(20, this.randomNum(50, 500)));
+      // this.createList(this.randomNum(20, this.randomNum(50, 500)));
+      this.createList(2000);
       console.log(this.documents);
     },
     randomNum(min, max) {
@@ -125,7 +127,7 @@ export default {
     async submitList() {
       this.loading = true;
       await this.addAllDocs(
-        cerobee.generate(4).substring(1, 5),
+        `${cerobee.generate(4).substring(1, 5)}_${this.documents.length}`,
         this.documents
       );
       this.loading = false;

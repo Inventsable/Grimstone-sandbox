@@ -6,6 +6,8 @@
   "author": "Tom Scharstein <trscharstein@gmail.com>",
   "private": true,
   "scripts": {
+    "serve": "quasar dev",
+    "build": "quasar build",
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
@@ -13,6 +15,7 @@
     "clerobee": "^1.0.5",
     "core-js": "^3.6.5",
     "firebase": "^8.2.4",
+    "grimstone": "^1.0.0",
     "jabber": "^1.2.2",
     "quasar": "^1.0.0"
   },

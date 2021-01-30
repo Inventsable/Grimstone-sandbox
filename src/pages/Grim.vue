@@ -9,7 +9,6 @@
           lazy-rules
           :rules="[(val) => (val && val.length > 0) || 'Cannot be empty']"
         />
-
         <q-input
           filled
           v-model="doc"
@@ -46,14 +45,13 @@
 </template>
 
 <script>
-import db from "../init";
-import Grimstone from "../Grimstone";
+import Grimstone from "grimstone";
 import config from "../../config";
 const grim = new Grimstone(config);
 
 export default {
   data: () => ({
-    collection: "7405",
+    collection: "764f",
     doc: "0D29f1PZLV37qCkVsSzV",
     loading: false,
     target: null,
@@ -62,20 +60,21 @@ export default {
   mounted() {
     console.clear();
     console.log(grim);
-    console.log(grim.test());
   },
   methods: {
     async modifyCollection() {
+      this.modifyAll = true;
       console.log("MODIFY ALL");
+      console.time("Modifying documents");
       let result = await grim.modifyCollection(
         this.collection,
         this.modifyEmail
       );
-
+      console.timeEnd("Modifying documents");
+      this.modifyAll = false;
       console.log(result);
     },
     modifyEmail(data) {
-      console.log("INCOMING:", data.email);
       return {
         email: data.email.toLowerCase().trim(),
       };
